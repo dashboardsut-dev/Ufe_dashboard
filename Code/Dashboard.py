@@ -1407,46 +1407,29 @@ elif st.session_state.page == "res":
         s = dfr[dfr["Үзүүлэлт"] == metric].sort_values("Он")
         return list(s["Он"]), list(s[dept])
 
-        # ── SECTION B: 2026 оны тоон KPI товчлуур ──
+# ── SECTION B: 2026 оны тоон KPI товчлуур ──
     st.markdown("<div class='section-title'>🔢 2026 оны тоон үзүүлэлтүүд</div>", unsafe_allow_html=True)
 
-    TOP_COUNT_KPIS = [
-        ("Эрдэм шинжилгээний бүтээлийн тоо",              "📄 ЭШ бүтээл",        C["blue"]),
-        ("Эрдэм шинжилгээний ажилтны тоо",                "👩‍🔬 ЭШ ажилтан",      C["blue"]),
-        ("Эрдэм шинжилгээний бүтээлд оролцсон багшийн тоо","👨‍🏫 ЭШ бүтээлд оролцсон багш",   C["blue"]),
-        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо", "⭐ ОУИ өндөртэй сэтгүүл нийтлүүлсэн", C["blue"]),
-        ("ОУ сэтгүүлд нийтлүүлсэн бүтээлийн тоо",         "📰 ОУ сэтгүүлд нийтлүүлсэн",       C["blue"]),
-        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",  "🌍 Гадаадын эрдэмтэдтэй хамтарсан",        C["blue"]),
-        ("Эшлэлийн тоо",                                   "🔗 Эшлэлийн тоо",            C["blue"]),
-        ("Хамтарсан судалгаа, төслийн тоо",                "🤝 Хамтарсан судалгаа", C["blue"]),
+    ALL_COUNT_KPIS = [
+        ("Эрдэм шинжилгээний бүтээлийн тоо",                          "📄 ЭШ бүтээл",           C["blue"]),
+        ("Эрдэм шинжилгээний ажилтны тоо",                            "👩‍🔬 ЭШ ажилтан",         C["blue"]),
+        ("Эрдэм шинжилгээний бүтээлд оролцсон багшийн тоо",           "👨‍🏫 ЭШ-д оролцсон багш",  C["blue"]),
+        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо",    "⭐ ОУ импакт сэтгүүл",   C["blue"]),
+        ("ОУ сэтгүүлд нийтлүүлсэн бүтээлийн тоо",                    "📰 ОУ сэтгүүл",           C["blue"]),
+        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",             "🌍 Гадаадтай хамтарсан",  C["blue"]),
+        ("Эшлэлийн тоо",                                               "🔗 Эшлэлийн тоо",         C["blue"]),
+        ("Хамтарсан судалгаа, төслийн тоо",                           "🤝 Хамтарсан судалгаа",   C["blue"]),
+        ("Хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",                      "📋 Хэрэгжсэн төсөл",      C["blue"]),
+        ("Бойжуулсан гарааны компаний тоо",                           "🚀 Гарааны компани",       C["blue"]),
+        ("Патент, лицензийн гэрээ, зохиогчийн эрхийн гэрчилгээний тоо","📜 Патент/Лиценз",       C["blue"]),
+        ("БССА-аас санаачлан хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",  "🏛️ БССА санаачлага",     C["blue"]),
     ]
 
     kpi_r_cols = st.columns(4)
-    for i, (met, lbl, clr) in enumerate(TOP_COUNT_KPIS):
+    for i, (met, lbl, clr) in enumerate(ALL_COUNT_KPIS):
         v = rgv(met, CURRENT_YEAR, D)
         val_str = str(int(v)) if v is not None else "—"
         kpi_r_cols[i % 4].markdown(f"""
-<div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
-padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr};'>
-    <div style='color:{clr};font-size:26px;font-weight:700;'>{val_str}</div>
-    <div style='color:#ffffff;font-size:14px;margin-top:3px;'>{lbl}</div>
-</div>""", unsafe_allow_html=True)
-
-    st.markdown("")
-
-    # 2-р мөр KPI
-    BOT_COUNT_KPIS = [
-        ("Хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",                         "📋 Хэрэгжсэн төсөл",     C["blue"]),
-        ("Бойжуулсан гарааны компаний тоо",                              "🚀 Гарааны компани",       C["blue"]),
-        ("Патент, лицензийн гэрээ, зохиогчийн эрхийн гэрчилгээний тоо", "📜 Патент/Лиценз",         C["blue"]),
-        ("БССА-аас санаачлан хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",     "🏛️ БССА санаачлага",     C["blue"]),
-    ]
-
-    kpi_r_cols2 = st.columns(4)
-    for i, (met, lbl, clr) in enumerate(BOT_COUNT_KPIS):
-        v = rgv(met, CURRENT_YEAR, D)
-        val_str = str(int(v)) if v is not None else "—"
-        kpi_r_cols2[i % 4].markdown(f"""
 <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
 padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr};'>
     <div style='color:{clr};font-size:26px;font-weight:700;'>{val_str}</div>
