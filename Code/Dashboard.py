@@ -523,33 +523,33 @@ with col_h2:
         st.rerun()
 
 with col_h3:
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
     if st.button("📚 Хөтөлбөр хөгжил", key="nav_prog",
                  type="primary" if st.session_state.page == "prog" else "secondary"):
         st.session_state.page = "prog"
         st.rerun()
 
 with col_h4:
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
     if st.button("🎓 Хичээл, Сургалт", key="nav_stud",
                  type="primary" if st.session_state.page == "stud" else "secondary"):
         st.session_state.page = "stud"
         st.rerun()
 
 with col_h5:
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
     if st.button("🏫 Суралцагч хөгжил", key="nav_stud_dev",
                  type="primary" if st.session_state.page == "stud_dev" else "secondary"):
         st.session_state.page = "stud_dev"
         st.rerun()
 with col_h6:
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
     if st.button("🔬 Судалгаа, төсөл", key="nav_res",
                  type="primary" if st.session_state.page == "res" else "secondary"):
         st.session_state.page = "res"
         st.rerun()
 with col_h7:
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
     if st.button("💰 Санхүүгийн мэдээлэл", key="nav_fin",
                  type="primary" if st.session_state.page == "fin" else "secondary"):
         st.session_state.page = "fin"
