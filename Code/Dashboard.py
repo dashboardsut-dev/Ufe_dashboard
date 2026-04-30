@@ -509,14 +509,14 @@ with col_h1:
     disp_name = dept_labels.get(D, D) if st.session_state.page != "stud_dev" else f"📋 {SELECTED_PROG}"
     st.markdown(f"""
 <div style='background:linear-gradient(90deg,#0d1f4a,#1a2d6b,#0d1f4a);
-border:1px solid #1e3a8a;border-radius:8px;padding:14px 20px;'>
+border:1px solid #1e3a8a;border-radius:8px;padding:8px 20px;'>
 <span style='color:#fff;font-size:17px;font-weight:700;'>🎓 СЭЗИС — Стратегийн KPI Самбар</span><br>
 <span style='color:#5a80b8;font-size:12px;'>Сонголт: <b style='color:#00d4ff'>{disp_name}</b> &nbsp;|&nbsp; Одоогийн жил: <b style='color:#00d4ff'>2026</b></span>
 </div>
 """, unsafe_allow_html=True)
 
 with col_h2:
-    st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     if st.button("👩‍🏫 Багшийн хөгжил", key="nav_teacher",
                  type="primary" if st.session_state.page == "teacher" else "secondary"):
         st.session_state.page = "teacher"
