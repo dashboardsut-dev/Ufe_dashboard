@@ -44,7 +44,7 @@ div="stSidebar"] .stButton > button:hover {
     border-color: #3a6adc !important;
 }
 .block-container {
-    padding-top: 1rem !important;
+    padding-top: 10rem !important;
 }
 .kpi-card {
     background: linear-gradient(135deg, #0d1f4a 0%, #112240 100%);
