@@ -516,7 +516,7 @@ border:1px solid #1e3a8a;border-radius:8px;padding:4px 20px;'>
 """, unsafe_allow_html=True)
 
 with col_h2:
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
     if st.button("👩‍🏫 Багшийн хөгжил", key="nav_teacher",
                  type="primary" if st.session_state.page == "teacher" else "secondary"):
         st.session_state.page = "teacher"
