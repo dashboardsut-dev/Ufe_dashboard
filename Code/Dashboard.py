@@ -43,7 +43,9 @@ div="stSidebar"] .stButton > button:hover {
     color: #fff !important;
     border-color: #3a6adc !important;
 }
-
+.block-container {
+    padding-top: 1rem !important;
+}
 .kpi-card {
     background: linear-gradient(135deg, #0d1f4a 0%, #112240 100%);
     border: 1px solid #1a3060;
@@ -508,6 +510,7 @@ SELECTED_PROG_IDX = PROGRAMS_D.index(SELECTED_PROG) if SELECTED_PROG in PROGRAMS
 # HEADER — page navigation tabs
 # ============================================================
 col_h1, col_h2, col_h3, col_h4, col_h5, col_h6, col_h7 = st.columns([3, 1, 1, 1, 1, 1, 1])
+st.markdown("<div style='margin-bottom:16px'></div>", unsafe_allow_html=True)
 with col_h1:
     disp_name = dept_labels.get(D, D) if st.session_state.page != "stud_dev" else f"📋 {SELECTED_PROG}"
     st.markdown(f"""
