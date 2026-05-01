@@ -43,9 +43,7 @@ div="stSidebar"] .stButton > button:hover {
     color: #fff !important;
     border-color: #3a6adc !important;
 }
-.block-container {
-    padding-top: 10rem !important;
-}
+
 .kpi-card {
     background: linear-gradient(135deg, #0d1f4a 0%, #112240 100%);
     border: 1px solid #1a3060;
@@ -102,10 +100,7 @@ div="stSidebar"] .stButton > button:hover {
     border-color: #1a3060 !important;
     color: #8aaad8 !important;
 }
-/* Header товчлуурыг дээшлүүлэх */
-[data-testid="column"] > div:first-child > div:first-child > div:first-child > div > div > button {
-    margin-top: -8px !important;
-}
+
 # Sidebar-ын дээрээс зай ихэсгэх
 [data-testid="stSidebar"] > div:first-child {
     padding-top: 40px !important;   # 8px → 40px болгох
@@ -510,12 +505,11 @@ SELECTED_PROG_IDX = PROGRAMS_D.index(SELECTED_PROG) if SELECTED_PROG in PROGRAMS
 # HEADER — page navigation tabs
 # ============================================================
 col_h1, col_h2, col_h3, col_h4, col_h5, col_h6, col_h7 = st.columns([3, 1, 1, 1, 1, 1, 1])
-st.markdown("<div style='margin-bottom:16px'></div>", unsafe_allow_html=True)
 with col_h1:
     disp_name = dept_labels.get(D, D) if st.session_state.page != "stud_dev" else f"📋 {SELECTED_PROG}"
     st.markdown(f"""
 <div style='background:linear-gradient(90deg,#0d1f4a,#1a2d6b,#0d1f4a);
-border:1px solid #1e3a8a;border-radius:8px;padding:4px 20px;margin-top:6px;'>
+border:1px solid #1e3a8a;border-radius:14px;padding:12px 20px;'>
 <span style='color:#fff;font-size:17px;font-weight:700;'>🎓 СЭЗИС — Стратегийн KPI Самбар</span><br>
 <span style='color:#5a80b8;font-size:12px;'>Сонголт: <b style='color:#00d4ff'>{disp_name}</b> &nbsp;|&nbsp; Одоогийн жил: <b style='color:#00d4ff'>2026</b></span>
 </div>
@@ -529,33 +523,33 @@ with col_h2:
         st.rerun()
 
 with col_h3:
-    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     if st.button("📚 Хөтөлбөр хөгжил", key="nav_prog",
                  type="primary" if st.session_state.page == "prog" else "secondary"):
         st.session_state.page = "prog"
         st.rerun()
 
 with col_h4:
-    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     if st.button("🎓 Хичээл, Сургалт", key="nav_stud",
                  type="primary" if st.session_state.page == "stud" else "secondary"):
         st.session_state.page = "stud"
         st.rerun()
 
 with col_h5:
-    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     if st.button("🏫 Суралцагч хөгжил", key="nav_stud_dev",
                  type="primary" if st.session_state.page == "stud_dev" else "secondary"):
         st.session_state.page = "stud_dev"
         st.rerun()
 with col_h6:
-    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     if st.button("🔬 Судалгаа, төсөл", key="nav_res",
                  type="primary" if st.session_state.page == "res" else "secondary"):
         st.session_state.page = "res"
         st.rerun()
 with col_h7:
-    st.markdown("<div style='height:0px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     if st.button("💰 Санхүүгийн мэдээлэл", key="nav_fin",
                  type="primary" if st.session_state.page == "fin" else "secondary"):
         st.session_state.page = "fin"
@@ -1413,29 +1407,46 @@ elif st.session_state.page == "res":
         s = dfr[dfr["Үзүүлэлт"] == metric].sort_values("Он")
         return list(s["Он"]), list(s[dept])
 
-# ── SECTION B: 2026 оны тоон KPI товчлуур ──
+        # ── SECTION B: 2026 оны тоон KPI товчлуур ──
     st.markdown("<div class='section-title'>🔢 2026 оны тоон үзүүлэлтүүд</div>", unsafe_allow_html=True)
 
-    ALL_COUNT_KPIS = [
-        ("Эрдэм шинжилгээний бүтээлийн тоо",                          "📄 ЭШ бүтээл",           C["blue"]),
-        ("Эрдэм шинжилгээний ажилтны тоо",                            "👩‍🔬 ЭШ ажилтан",         C["blue"]),
-        ("Эрдэм шинжилгээний бүтээлд оролцсон багшийн тоо",           "👨‍🏫 ЭШ-д оролцсон багш",  C["blue"]),
-        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо",    "⭐ ОУ импакт сэтгүүл",   C["blue"]),
-        ("ОУ сэтгүүлд нийтлүүлсэн бүтээлийн тоо",                    "📰 ОУ сэтгүүл",           C["blue"]),
-        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",             "🌍 Гадаадтай хамтарсан",  C["blue"]),
-        ("Эшлэлийн тоо",                                               "🔗 Эшлэлийн тоо",         C["blue"]),
-        ("Хамтарсан судалгаа, төслийн тоо",                           "🤝 Хамтарсан судалгаа",   C["blue"]),
-        ("Хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",                      "📋 Хэрэгжсэн төсөл",      C["blue"]),
-        ("Бойжуулсан гарааны компаний тоо",                           "🚀 Гарааны компани",       C["blue"]),
-        ("Патент, лицензийн гэрээ, зохиогчийн эрхийн гэрчилгээний тоо","📜 Патент/Лиценз",       C["blue"]),
-        ("БССА-аас санаачлан хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",  "🏛️ БССА санаачлага",     C["blue"]),
+    TOP_COUNT_KPIS = [
+        ("Эрдэм шинжилгээний бүтээлийн тоо",              "📄 ЭШ бүтээл",        C["blue"]),
+        ("Эрдэм шинжилгээний ажилтны тоо",                "👩‍🔬 ЭШ ажилтан",      C["blue"]),
+        ("Эрдэм шинжилгээний бүтээлд оролцсон багшийн тоо","👨‍🏫 ЭШ бүтээлд оролцсон багш",   C["blue"]),
+        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо", "⭐ ОУ импакт өндөртэй сэтгүүл нийтлүүлсэн", C["blue"]),
+        ("ОУ сэтгүүлд нийтлүүлсэн бүтээлийн тоо",         "📰 ОУ сэтгүүлд нийтлүүлсэн",       C["blue"]),
+        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",  "🌍 Гадаадын эрдэмтэдтэй хамтарсан бүтээл",        C["blue"]),
+        ("Эшлэлийн тоо",                                   "🔗 Эшлэлийн тоо",            C["blue"]),
+        ("Хамтарсан судалгаа, төслийн тоо",                "🤝 Хамтарсан судалгаа", C["blue"]),
     ]
 
     kpi_r_cols = st.columns(4)
-    for i, (met, lbl, clr) in enumerate(ALL_COUNT_KPIS):
+    for i, (met, lbl, clr) in enumerate(TOP_COUNT_KPIS):
         v = rgv(met, CURRENT_YEAR, D)
         val_str = str(int(v)) if v is not None else "—"
         kpi_r_cols[i % 4].markdown(f"""
+<div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
+padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr};'>
+    <div style='color:{clr};font-size:26px;font-weight:700;'>{val_str}</div>
+    <div style='color:#ffffff;font-size:14px;margin-top:3px;'>{lbl}</div>
+</div>""", unsafe_allow_html=True)
+
+    st.markdown("")
+
+    # 2-р мөр KPI
+    BOT_COUNT_KPIS = [
+        ("Хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",                         "📋 Хэрэгжсэн төсөл",     C["blue"]),
+        ("Бойжуулсан гарааны компаний тоо",                              "🚀 Гарааны компани",       C["blue"]),
+        ("Патент, лицензийн гэрээ, зохиогчийн эрхийн гэрчилгээний тоо", "📜 Патент/Лиценз",         C["blue"]),
+        ("БССА-аас санаачлан хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",     "🏛️ БССА санаачлага",     C["blue"]),
+    ]
+
+    kpi_r_cols2 = st.columns(4)
+    for i, (met, lbl, clr) in enumerate(BOT_COUNT_KPIS):
+        v = rgv(met, CURRENT_YEAR, D)
+        val_str = str(int(v)) if v is not None else "—"
+        kpi_r_cols2[i % 4].markdown(f"""
 <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
 padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr};'>
     <div style='color:{clr};font-size:26px;font-weight:700;'>{val_str}</div>
