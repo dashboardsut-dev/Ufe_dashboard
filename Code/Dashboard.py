@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ============================================================
+# ===========================================================
 # CSS
 # ============================================================
 st.markdown("""
@@ -20,30 +20,67 @@ st.markdown("""
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 .stApp { background: #0a0f1e; color: #c8d8f0; }
 
-="stSidebar"] {
+/* Sidebar суурь */
+[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #080d1a 0%, #0a1228 100%);
     border-right: 1px solid #162040;
 }
-="stSidebar"] * { color: #8aaad8 !important; }
+[data-testid="stSidebar"] * { color: #8aaad8 !important; }
 
-div="stSidebar"] .stButton > button {
+[data-testid="stSidebar"] > div:first-child {
+    padding-top: 0px !important;
+}
+
+/* ====== САЙДБАР ТОВЧЛУУРУУД (PAGE-ТАЙ АДИЛХАН) ====== */
+/* Үндсэн төлөв (сонгогдоогүй) - secondary төлөвтэй адил */
+[data-testid="stSidebar"] button[kind="secondary"],
+[data-testid="stSidebar"] button[kind="primary"] {
     width: 100% !important;
-    text-align: left !important;
+    min-width: 120px !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: left !important;           /* ← center → left */
+    justify-content: flex-start !important; /* ← center → flex-start */
     background: #0d1830 !important;
     color: #7090c0 !important;
     border: 1px solid #1a2e5a !important;
     border-radius: 8px !important;
-    padding: 8px 14px !important;
+    padding: 10px 14px !important;
     font-size: 13px !important;
-    margin-bottom: 4px !important;
-    transition: all 0.15s !important;
+    margin-bottom: 6px !important;
+    transition: all 0.15s ease-in-out !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
 }
-div="stSidebar"] .stButton > button:hover {
+
+/* HOVER төлөв - PAGE-н hover-тэй яг адилхан */
+[data-testid="stSidebar"] button[kind="secondary"]:hover,
+[data-testid="stSidebar"] button[kind="primary"]:hover {
     background: #1a3060 !important;
-    color: #fff !important;
+    color: #ffffff !important;
+    border-color: #3a6adc !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(58, 106, 220, 0.25);
+}
+
+/* SELECT (СОНГОГДСОН) төлөв - PAGE-н primary төлөвтэй яг адилхан */
+/* Энд: сонгогдсон тэнхимийн товчлуур нь page-н сонгогдсон төлөвтэй ижил өнгөтэй болно */
+[data-testid="stSidebar"] button[kind="primary"] {
+    background: #1a3060 !important;
+    color: #ffffff !important;
+    border-left: 3px solid #00d4ff !important;
     border-color: #3a6adc !important;
 }
 
+/* Товчлууруудын хоорондох зай */
+[data-testid="stSidebar"] .stButton {
+    width: 100% !important;
+}
+
+/* Бусад стильүүд */
 .kpi-card {
     background: linear-gradient(135deg, #0d1f4a 0%, #112240 100%);
     border: 1px solid #1a3060;
@@ -101,18 +138,10 @@ div="stSidebar"] .stButton > button:hover {
     color: #8aaad8 !important;
 }
 
-# Sidebar-ын дээрээс зай ихэсгэх
-[data-testid="stSidebar"] > div:first-child {
-    padding-top: 40px !important;   # 8px → 40px болгох
-
-# Товчлуурын хоорондох зай
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-    gap: 4px !important;            # 0px → 4px болгох
+    gap: 4px !important;
+}
 
-# Товчлуур дотоод зай
-div[data-testid="stSidebar"] .stButton > button {
-    margin-bottom: 6px !important;  # 4px → 6px болгох
-    padding: 10px 14px !important;  # 8px → 10px болгох
 section[data-testid="stSidebar"] {
     overflow: hidden !important;
     height: 100vh !important;
@@ -470,33 +499,70 @@ dept_labels = {
     "ОУС": "📚 ОУС", "СДСТ": "🔬 СДСТ", "СУТ": "⚙️ СУТ",
     "СШУТ": "🧮 СШУТ", "ЭкТ": "📈 ЭкТ", "ЭнТИнс": "🏢 ЭнТИнс", "ЭЗТ": "💹 ЭЗТ",
 }
-
 with st.sidebar:
+    # Хуудасны дагуу товчлуурын өргөнийг тохируулах
+    if st.session_state.page == "stud_dev":
+        st.markdown("""
+        <style>
+        [data-testid="stSidebar"] button[kind="secondary"],
+        [data-testid="stSidebar"] button[kind="primary"] {
+            width: 200px !important;
+            min-width: 200px !important;
+            max-width: 200px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <style>
+        [data-testid="stSidebar"] button[kind="secondary"],
+        [data-testid="stSidebar"] button[kind="primary"] {
+            width: 120px !important;
+            min-width: 120px !important;
+            max-width: 120px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+    
+    # ... дараа нь таны одоо байгаа sidebar код
     st.markdown("""
-<div style='color:#fff;font-size:15px;font-weight:700;margin:0 0 4px 0;'>🎓 СЭЗИС</div>
-<div style='border-bottom:1px solid #1a3060;margin-bottom:6px;'></div>
+<div style='color:#fff;font-size:15px;font-weight:700;margin:0 0 8px 0;padding:10;'>🎓 СЭЗИС</div>
 """, unsafe_allow_html=True)
 
     if st.session_state.page != "stud_dev":
+        # 2. ТЭНХИМ СОНГОХ гарчиг (СЭЗИС-ийн ДООР, зураасны ДЭЭР)
         st.markdown("""
-<div style='color:#4a7acc;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:6px;'>ТЭНХИМ СОНГОХ</div>
+<div style='color:#4a7acc;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:12px;padding:3;'>📂 ТЭНХИМ СОНГОХ</div>
 """, unsafe_allow_html=True)
+        
+        # 3. Зураас (ТЭНХИМ СОНГОХ-ын ДООР)
+        st.markdown("""
+<div style='border-bottom:1px solid #1a3060;margin-top:8px;margin-bottom:20px;padding:0;'></div>
+""", unsafe_allow_html=True)
+        
+        # 4. Товчлуурууд (зураасны ДООР)
         all_depts = ["Нийт"] + DEPTS
         for d in all_depts:
             label = dept_labels.get(d, d)
-            if st.button(label, key=f"dept_{d}"):
+            if st.button(label, key=f"dept_{d}",
+                         type="primary" if st.session_state.dept == d else "secondary",
+                         use_container_width=True):  # ← ЭНЭ НЭМЭХ
                 st.session_state.dept = d
                 st.rerun()
     else:
         st.markdown("""
-<div style='color:#4a7acc;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:6px;'>ХӨТӨЛБӨР СОНГОХ</div>
+<div style='color:#4a7acc;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:12px;padding:0;'>📂 ХӨТӨЛБӨР СОНГОХ</div>
+""", unsafe_allow_html=True)
+        st.markdown("""
+<div style='border-bottom:1px solid #1a3060;margin-bottom:20px;padding:0;'></div>
 """, unsafe_allow_html=True)
         for prog in PROGRAMS_D:
-            short = prog[:14] + "…" if len(prog) > 14 else prog
-            if st.button(f"📋 {short}", key=f"prog_{prog}"):
+            short = prog[:25] + "…" if len(prog) > 25 else prog
+            if st.button(f"📋 {short}", key=f"prog_{prog}",
+                         type="primary" if st.session_state.sd_prog == prog else "secondary",
+                         use_container_width=True):  # ← ЭНЭ НЭМЭХ
                 st.session_state.sd_prog = prog
                 st.rerun()
-
 D = st.session_state.dept
 SELECTED_PROG = st.session_state.sd_prog
 SELECTED_PROG_IDX = PROGRAMS_D.index(SELECTED_PROG) if SELECTED_PROG in PROGRAMS_D else 0
@@ -1414,9 +1480,9 @@ elif st.session_state.page == "res":
         ("Эрдэм шинжилгээний бүтээлийн тоо",              "📄 ЭШ бүтээл",        C["blue"]),
         ("Эрдэм шинжилгээний ажилтны тоо",                "👩‍🔬 ЭШ ажилтан",      C["blue"]),
         ("Эрдэм шинжилгээний бүтээлд оролцсон багшийн тоо","👨‍🏫 ЭШ бүтээлд оролцсон багш",   C["blue"]),
-        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо", "⭐ ОУ импакттай сэтгүүл", C["blue"]),
+        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо", "⭐ ОУ импакт өндөртэй сэтгүүл нийтлүүлсэн", C["blue"]),
         ("ОУ сэтгүүлд нийтлүүлсэн бүтээлийн тоо",         "📰 ОУ сэтгүүлд нийтлүүлсэн",       C["blue"]),
-        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",  "🌍 Гадаадын эрдэмтэдтэй хамтарсан",        C["blue"]),
+        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",  "🌍 Гадаадын эрдэмтэдтэй хамтарсан бүтээл",        C["blue"]),
         ("Эшлэлийн тоо",                                   "🔗 Эшлэлийн тоо",            C["blue"]),
         ("Хамтарсан судалгаа, төслийн тоо",                "🤝 Хамтарсан судалгаа", C["blue"]),
     ]
