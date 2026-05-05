@@ -13,7 +13,7 @@ st.set_page_config(
 
 # ===========================================================
 # CSS
-# ===========================================================
+# ==========================================================
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -126,6 +126,15 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     border-bottom: 1px solid #1a3060;
     padding-bottom: 8px;
     margin: 24px 0 12px 0;
+}
+
+div[data-testid="stSelectbox"] > div > div {
+    background: #0d1830 !important;
+    border: 1px solid #1a3060 !important;
+    border-radius: 8px !important;
+    color: #00d4ff !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
 }
 
 ::-webkit-scrollbar { width: 5px; }
@@ -451,6 +460,16 @@ def pct_line_fig(title, yrs, vals, h=280):
     fig = line_fig(title, yrs, vals, h)
     fig.update_layout(yaxis=dict(tickformat=".1%", gridcolor=C["grid"]))
     return fig
+# ── Он сонгох helper ──
+def section_with_year(title, key, src_df, default_year=CURRENT_YEAR):
+    t_col, y_col = st.columns([7, 1])
+    with t_col:
+        st.markdown(f"<div class='section-title'>{title}</div>", unsafe_allow_html=True)
+    with y_col:
+        years = sorted([int(y) for y in src_df["Он"].dropna().unique()])
+        idx   = years.index(default_year) if default_year in years else len(years) - 1
+        return st.selectbox("", years, index=idx,
+                            key=key, label_visibility="collapsed")
 def donut_fig(labels, values, title, h=300, colors=None):
     clrs = colors[:len(labels)] if colors else DEPT_COLORS[:len(labels)]
     fig = go.Figure(go.Pie(
@@ -629,7 +648,7 @@ if st.session_state.page == "teacher":
 # ============================================================
 # SECTION 1 — KPI КАРТ ҮЗҮҮЛЭЛТҮҮД
 # ============================================================
-    st.markdown("<div class='section-title'>📈 2026 оны хувийн KPI үзүүлэлтүүд</div>", unsafe_allow_html=True)
+    kpi_yr_t = section_with_year("📈 Хувийн KPI үзүүлэлтүүд", "kpi_yr_teacher", df)
     pct_kpis = [
         ("Хувь", "Доктор зэрэгтэй багшийн эзлэх хувь",                     "🔬 Доктор зэрэгтэй багш",             C["blue"]),
         ("Хувь", "Гадаад багшийн эзлэх хувь",                               "🌍 Гадаад багш",              C["blue"]),
@@ -644,7 +663,7 @@ if st.session_state.page == "teacher":
     ]
     pct_cols = st.columns(5)
     for i, (cat, met, lbl, clr) in enumerate(pct_kpis):
-        v = gv(cat, met, CURRENT_YEAR, D)
+        v = gv(cat, met, kpi_yr_t, D)
         pct_str = f"{v*100:.1f}%" if v is not None else "—"
         pct_cols[i % 5].markdown(f"""
 <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
@@ -879,8 +898,7 @@ elif st.session_state.page == "prog":
         return list(s["Он"]), list(s[dept])
 
     # ── SECTION A: 2026 оны тоон KPI ──
-    st.markdown("<div class='section-title'>📊 2026 оны үндсэн үзүүлэлтүүд</div>", unsafe_allow_html=True)
-
+    kpi_yr_p = section_with_year("📊 Үндсэн үзүүлэлтүүд", "kpi_yr_prog", dfp)
     count_kpis = [
         ("Хэрэгжүүлж буй үндсэн хөтөлбөрийн тоо",          "📋 Үндсэн хөтөлбөр",            C["blue"]),
         ("Цахимаар хэрэгжиж буй хөтөлбөрийн тоо",           "💻 Цахим хөтөлбөр",              C["blue"]),
@@ -895,7 +913,7 @@ elif st.session_state.page == "prog":
     ]
     kpi_cols = st.columns(5)
     for i, (met, lbl, clr) in enumerate(count_kpis):
-        v = pgv(met, CURRENT_YEAR, D)
+        v = pgv(met, kpi_yr_p, D)
         val_str = str(int(v)) if v is not None else "—"
         kpi_cols[i % 5].markdown(f"""
 <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
@@ -1056,8 +1074,7 @@ padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr}
 elif st.session_state.page == "stud":
 
     # ── SECTION A: 2026 оны тоон KPI ──
-    st.markdown("<div class='section-title'>📊 2026 оны тоон үзүүлэлтүүд</div>", unsafe_allow_html=True)
-
+    kpi_yr_s = section_with_year("📊 Тоон үзүүлэлтүүд", "kpi_yr_stud", dfs)
     count_kpis_s = [
         ("Хичээлийн тоо",                                                  "📚 Нийт хичээл",        C["blue"]),
         ("Цахим хэлбэрээр орж буй хичээлийн тоо",                         "💻 Цахим хичээл",        C["blue"]),
@@ -1071,7 +1088,7 @@ elif st.session_state.page == "stud":
 
     cnt_cols = st.columns(4)
     for i, (met, lbl, clr) in enumerate(count_kpis_s):
-        v = sv(met, CURRENT_YEAR, D)
+        v = sv(met, kpi_yr_s, D)
         val_str = str(int(v)) if v is not None else "—"
         cnt_cols[i % 4].markdown(f"""
 <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
@@ -1199,8 +1216,7 @@ elif st.session_state.page == "stud_dev":
     COURSES = ["I курс", "II курс", "III курс", "IV курс", "V+ курс"]
 
     # ── SECTION A: Сонгосон хөтөлбөрийн 2026 оны тоон KPI ──
-    st.markdown(f"<div class='section-title'>📊 {SELECTED_PROG} — 2026 оны тоон үзүүлэлтүүд</div>", unsafe_allow_html=True)
-
+    kpi_yr_sd = section_with_year(f"📊 {SELECTED_PROG} — Тоон үзүүлэлтүүд", "kpi_yr_stud_dev", dfd.rename(columns={2:"Он"}))
     count_kpis_sd = [
         ("Үндсэн + цагийн + цахим суралцагчийн тоо",           "👥 Нийт суралцагч",      C["blue"]),
         ("Үндсэн хөтөлбөрийн суралцагчийн тоо",                "📘 Үндсэн хөтөлбөр",     C["blue"]),
@@ -1218,7 +1234,7 @@ elif st.session_state.page == "stud_dev":
 
     kpi_cols_sd = st.columns(4)
     for i, (met, lbl, clr) in enumerate(count_kpis_sd):
-        v = sdv_prog_total(met, CURRENT_YEAR, PROG_IDX)
+        v = sdv_prog_total(met, kpi_yr_sd, PROG_IDX)
         val_str = str(int(v)) if v is not None else "—"
         kpi_cols_sd[i % 4].markdown(f"""
 <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
@@ -1472,52 +1488,34 @@ elif st.session_state.page == "res":
     def rgseries(metric, dept):
         s = dfr[dfr["Үзүүлэлт"] == metric].sort_values("Он")
         return list(s["Он"]), list(s[dept])
-
-        # ── SECTION B: 2026 оны тоон KPI товчлуур ──
-    st.markdown("<div class='section-title'>🔢 2026 оны тоон үзүүлэлтүүд</div>", unsafe_allow_html=True)
-
-    TOP_COUNT_KPIS = [
-        ("Эрдэм шинжилгээний бүтээлийн тоо",              "📄 ЭШ бүтээл",        C["blue"]),
-        ("Эрдэм шинжилгээний ажилтны тоо",                "👩‍🔬 ЭШ ажилтан",      C["blue"]),
-        ("Эрдэм шинжилгээний бүтээлд оролцсон багшийн тоо","👨‍🏫 ЭШ бүтээлд оролцсон багш",   C["blue"]),
-        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо", "⭐ ОУ импакт өндөртэй сэтгүүл нийтлүүлсэн", C["blue"]),
-        ("ОУ сэтгүүлд нийтлүүлсэн бүтээлийн тоо",         "📰 ОУ сэтгүүлд нийтлүүлсэн",       C["blue"]),
-        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",  "🌍 Гадаадын эрдэмтэдтэй хамтарсан бүтээл",        C["blue"]),
-        ("Эшлэлийн тоо",                                   "🔗 Эшлэлийн тоо",            C["blue"]),
-        ("Хамтарсан судалгаа, төслийн тоо",                "🤝 Хамтарсан судалгаа", C["blue"]),
+    # ── SECTION B: 2026 оны тоон KPI товчлуур ──
+    kpi_yr_r = section_with_year("🔢 Тоон үзүүлэлтүүд", "kpi_yr_res", dfr)
+    ALL_COUNT_KPIS = [
+        ("Эрдэм шинжилгээний бүтээлийн тоо",                                "📄 ЭШ бүтээл",                    C["blue"]),
+        ("Эрдэм шинжилгээний ажилтны тоо",                                  "👩‍🔬 ЭШ ажилтан",                  C["blue"]),
+        ("Эрдэм шинжилгээний бүтээлд оролцсон багшийн тоо",                 "👨‍🏫 ЭШ бүтээлд оролцсон багш",    C["blue"]),
+        ("ОУ импакт өндөртэй сэтгүүлд нийтлүүлсэн бүтээлийн тоо",         "⭐ ОУ импакт өндөртэй сэтгүүл",   C["blue"]),
+        ("ОУ сэтгүүлд нийтлүүлсэн бүтээлийн тоо",                          "📰 ОУ сэтгүүлд нийтлүүлсэн",      C["blue"]),
+        ("Гадаадын эрдэмтэдтэй хамтарсан бүтээлийн тоо",                   "🌍 Гадаадын эрдэмтэдтэй хамтарсан", C["blue"]),
+        ("Эшлэлийн тоо",                                                     "🔗 Эшлэлийн тоо",                 C["blue"]),
+        ("Хамтарсан судалгаа, төслийн тоо",                                  "🤝 Хамтарсан судалгаа",           C["blue"]),
+        ("Хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",                            "📋 Хэрэгжсэн төсөл",              C["blue"]),
+        ("Бойжуулсан гарааны компаний тоо",                                  "🚀 Гарааны компани",               C["blue"]),
+        ("Патент, лицензийн гэрээ, зохиогчийн эрхийн гэрчилгээний тоо",    "📜 Патент/Лиценз",                C["blue"]),
+        ("БССА-аас санаачлан хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",        "🏛️ БССА санаачлага",              C["blue"]),
     ]
-
-    kpi_r_cols = st.columns(4)
-    for i, (met, lbl, clr) in enumerate(TOP_COUNT_KPIS):
-        v = rgv(met, CURRENT_YEAR, D)
+    
+    kpi_cols = st.columns(4)
+    for i, (met, lbl, clr) in enumerate(ALL_COUNT_KPIS):
+        v = rgv(met, kpi_yr_r, D)
         val_str = str(int(v)) if v is not None else "—"
-        kpi_r_cols[i % 4].markdown(f"""
-<div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
-padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr};'>
-    <div style='color:{clr};font-size:26px;font-weight:700;'>{val_str}</div>
-    <div style='color:#ffffff;font-size:14px;margin-top:3px;'>{lbl}</div>
-</div>""", unsafe_allow_html=True)
-
+        kpi_cols[i % 4].markdown(f"""
+    <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
+    padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr};'>
+        <div style='color:{clr};font-size:26px;font-weight:700;'>{val_str}</div>
+        <div style='color:#ffffff;font-size:14px;margin-top:3px;'>{lbl}</div>
+    </div>""", unsafe_allow_html=True)
     st.markdown("")
-
-    # 2-р мөр KPI
-    BOT_COUNT_KPIS = [
-        ("Хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",                         "📋 Хэрэгжсэн төсөл",     C["blue"]),
-        ("Бойжуулсан гарааны компаний тоо",                              "🚀 Гарааны компани",       C["blue"]),
-        ("Патент, лицензийн гэрээ, зохиогчийн эрхийн гэрчилгээний тоо", "📜 Патент/Лиценз",         C["blue"]),
-        ("БССА-аас санаачлан хэрэгжүүлсэн төсөл, хөтөлбөрийн тоо",     "🏛️ БССА санаачлага",     C["blue"]),
-    ]
-
-    kpi_r_cols2 = st.columns(4)
-    for i, (met, lbl, clr) in enumerate(BOT_COUNT_KPIS):
-        v = rgv(met, CURRENT_YEAR, D)
-        val_str = str(int(v)) if v is not None else "—"
-        kpi_r_cols2[i % 4].markdown(f"""
-<div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
-padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr};'>
-    <div style='color:{clr};font-size:26px;font-weight:700;'>{val_str}</div>
-    <div style='color:#ffffff;font-size:14px;margin-top:3px;'>{lbl}</div>
-</div>""", unsafe_allow_html=True)
     # ── SECTION A: Чухал хувийн KPI товчлуур (2026 + trend) ──
     st.markdown("<div class='section-title'>📈 Хувийн KPI үзүүлэлтүүд — 2026 ба Зорилтын трендийн график</div>", unsafe_allow_html=True)
 
@@ -1789,8 +1787,7 @@ elif st.session_state.page == "fin":
         return f"₮{int(v):,}"
 
     # ── SECTION A: 2026 оны гол орлогын KPI badge ──
-    st.markdown("<div class='section-title'>💰 2026 оны гол санхүүгийн үзүүлэлтүүд</div>", unsafe_allow_html=True)
-
+    kpi_yr_f = section_with_year("💰 Гол санхүүгийн үзүүлэлтүүд", "kpi_yr_fin", dff)
     COUNT_FIN_KPIS = [
         ("Нийт орлого",                       "💎 Нийт орлого",              C["blue"]),
         ("Бакалаврын сургалтын орлого",        "🎓 Бакалаврын орлого",         C["blue"]),
@@ -1804,7 +1801,7 @@ elif st.session_state.page == "fin":
 
     fin_cols = st.columns(4)
     for i, (met, lbl, clr) in enumerate(COUNT_FIN_KPIS):
-        v = fgv(met, CY, D)
+        v = fgv(met, kpi_yr_f, D)
         val_str = fmt_money(v)
         fin_cols[i % 4].markdown(f"""
 <div style='background:#0a1428;border:1px solid #162040;border-radius:10px;
@@ -1815,12 +1812,9 @@ padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr}
 
 # ── SECTION B: Нийт орлогын бүрэлдэхүүн — Pie chart ──
     st.markdown("<div class='section-title'>🥧 2026 оны нийт орлогын бүрэлдэхүүн</div>", unsafe_allow_html=True)
-
     BLUE_PALETTE = ["#1E90FF", "#4DB8FF", "#0A4A8A", "#00BFFF", "#0066CC", "#63CFFF",
                     "#1565C0", "#42A5F5", "#1976D2", "#90CAF9"]
-
-    pie_f1, pie_f2 = st.columns([1, 2])
-
+    pie_f1, pie_f2 = st.columns([1, 1])
     PIE_INCOME_METRICS = [
         ("Бакалаврын сургалтын орлого",         "Бакалаврын сургалт"),
         ("Үйлдвэрлэл, худалдааны орлого",       "Үйлдвэрлэл, худалдаа"),
@@ -1833,7 +1827,6 @@ padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr}
         ("Гарааны бизнесийн орлого",            "Гарааны бизнес"),
         ("Гадаад оюутаны сургалтын орлого",     "Гадаад оюутан"),
     ]
-
     with pie_f1:
         pie_labels = [lbl for _, lbl in PIE_INCOME_METRICS]
         pie_vals   = [fgv(met, CY, D) or 0 for met, _ in PIE_INCOME_METRICS]
@@ -1843,13 +1836,12 @@ padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr}
             textinfo="label+percent", textfont=dict(color=C["text"], size=10),
             insidetextorientation="radial",
         ))
-        t_pf = dict(**theme(360))
+        t_pf = dict(**theme(420))
         t_pf["title"] = dict(text="Орлогын эх үүсвэрийн харьцаа (2026)", font=dict(color=C["white"], size=12))
         t_pf["showlegend"] = False
         fig_pie_fin.update_layout(**t_pf)
         with st.container(border=True):
             st.plotly_chart(fig_pie_fin, use_container_width=True)
-
     with pie_f2:
         sorted_items = sorted(zip(pie_vals, pie_labels), reverse=True)
         s_vals, s_lbls = zip(*sorted_items) if sorted_items else ([], [])
@@ -1863,9 +1855,10 @@ padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr}
             text=[fmt_money(v) for v in s_vals],
             textposition="outside", textfont=dict(color=C["text"], size=10),
         ))
-        t_bp = dict(**theme(360))
+        t_bp = dict(**theme(420))
         t_bp["title"] = dict(text="Орлогын эх үүсвэр харьцуулалт (2026)", font=dict(color=C["white"], size=12))
-        t_bp["margin"]["l"] = 220
+        t_bp["margin"]["l"] = 160
+        t_bp["margin"]["r"] = 100
         t_bp["xaxis"]["title"] = "₮"
         fig_bar_pie.update_layout(**t_bp)
         with st.container(border=True):
