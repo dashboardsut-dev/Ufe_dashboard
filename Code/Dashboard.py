@@ -89,7 +89,7 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     width: 100% !important;
 }
 
-/* Бусад стильүүд */
+/* Бусад стилүүд */
 .kpi-card {
     background: linear-gradient(135deg, #0d1f4a 0%, #112240 100%);
     border: 1px solid #1a3060;
@@ -292,7 +292,6 @@ def load_fin_data():
     DATA_PATH = os.path.join(BASE_DIR, "..", "data", "Fin_dev_cl.xlsx")
     df = pd.read_excel(DATA_PATH, sheet_name="Sheet1", header=None)
     
-    # ✅ ЗАСВАР: эхлээд ffill хийх, дараа нь шүүх
     df[0] = df[0].ffill()
     df[1] = df[1].ffill()
     
@@ -589,7 +588,6 @@ with st.sidebar:
         </style>
         """, unsafe_allow_html=True)
     
-    # ... дараа нь таны одоо байгаа sidebar код
     st.markdown("""
 <div style='color:#fff;font-size:15px;font-weight:700;margin:0 0 8px 0;padding:10;'>🎓 СЭЗИС</div>
 """, unsafe_allow_html=True)
@@ -720,8 +718,6 @@ if st.session_state.page == "kpimain":
         return list(s["Он"]), list(s[col])
 
     # ── 4 БҮЛГИЙН ТОДОРХОЙЛОЛТ ──────────────────────────────
-    # (нэр, богино нэр, хувь эсэх)
-    # Бүх утга 1-ээс их = тоо, 0-1 хооронд = хувь
     GROUP1 = [  # Хөтөлбөрийн олон улсын хүрэх чадвар — БҮГД ТОО
         ("Олон улсад магадлан итгэмжлэгдсэн хөтөлбөрийн тоо, нэр",         "ОУ магадлан итгэмжлэлт",   False),
         ("Олон улсын мэргэжлийн байгуулагаар итгэмжлэгдсэн хөтөлбөрийн тоо","ОУ мэргэжлийн байгуулага", False),
@@ -1189,7 +1185,6 @@ padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr}
     with age_col:
         age_groups = ["25 хүртэл", "26-35", "36-45", "46-55", "56 ба түүнээс дээш"]
         age_vals = [gv("Насны бүлэг", ag, CURRENT_YEAR, D) or 0 for ag in age_groups]
-        # ✅ Vertical баганан диаграмм болгосон + rounded + цэнхэр
         fig_age = go.Figure(go.Bar(
             x=age_groups, y=age_vals,
             orientation="v",
@@ -1207,7 +1202,6 @@ padding:12px 10px;text-align:center;margin-bottom:8px;border-top:2px solid {clr}
         exp_groups = ["3 жил хүртэл", "4-6 жил", "Ажилласан жил - 7-9 жил", "10-15 жил", "16-20 жил", "21 ба түүнээс дээш"]
         exp_labels = ["≤3 жил", "4-6 жил", "7-9 жил", "10-15 жил", "16-20 жил", "21+ жил"]
         exp_vals = [gv("Ажилласан жил", eg, CURRENT_YEAR, D) or 0 for eg in exp_groups]
-        # ✅ Horizontal + rounded + цэнхэр нэг өнгө
         fig_exp = go.Figure(go.Bar(
             x=exp_vals, y=exp_labels,
             orientation="h",
